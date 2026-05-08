@@ -23,41 +23,32 @@ Add to your `flake.nix`:
 
 ```nix
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    aya-tool-nix.url = "github:pineapplehunter/aya-tool-nix";
-  };
+  inputs.aya-tool-nix.url = "github:pineapplehunter/aya-tool-nix";
 
-  outputs = { nixpkgs, aya-tool-nix, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [ aya-tool-nix.overlays.default ];
-      };
-    in
-    {
-      devShells.${system}.default = pkgs.mkShell {
-        packages = [ pkgs.aya-tool ];
-      };
-    };
+  outputs = { self, aya-tool-nix, ... }: ...
 }
 ```
 
 ### Using the Overlay
 
 ```nix
-{
-  nixpkgs.overlays = [ (import ./path/to/aya-tool-nix).overlays.default ];
-}
+pkgs = import nixpkgs { overlays = [ aya-tool-nix.overlays.default ]; };
 ```
 
 Then use `pkgs.aya-tool` in your configuration.
 
 ### Running Directly
 
-```bash
-nix run "github:pineapplehunter/aya-tool-nix"
+```shell
+$ nix run "github:pineapplehunter/aya-tool-nix"
+Usage: aya-tool <COMMAND>
+
+Commands:
+  generate  Generate Rust bindings to Kernel types using bpftool
+  help      Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
 ```
 
 Or locally:
@@ -66,17 +57,10 @@ Or locally:
 nix run
 ```
 
-### Building the Package
-
-```bash
-nix build
-./result/bin/aya-tool --help
-```
-
 ## Example: Generate Kernel Type Bindings
 
 ```bash
-nix run -- generate task_struct > src/vmlinux.rs
+nix run "github:pineapplehunter/aya-tool-nix" -- generate task_struct > src/vmlinux.rs
 ```
 
 This generates Rust bindings for `task_struct` that can be used in Aya eBPF programs.
