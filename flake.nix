@@ -7,7 +7,8 @@
     { self, nixpkgs }:
     {
       overlays.default = final: prev: {
-        aya-tool = final.callPackage ./aya-tool { };
+        aya-tool-unwrapped = final.callPackage ./aya-tool/unwrapped.nix { };
+        aya-tool = final.callPackage ./aya-tool/default.nix { };
       };
       packages =
         nixpkgs.lib.genAttrs
@@ -26,7 +27,7 @@
               };
             in
             {
-              inherit (pkgs) aya-tool;
+              inherit (pkgs) aya-tool aya-tool-unwrapped;
               default = pkgs.aya-tool;
             }
           );
