@@ -7,10 +7,16 @@
     { self, nixpkgs }:
     {
       overlays.default = final: prev: {
-        aya-tool = final.callPackage ./aya-tool.nix { };
+        aya-tool = final.callPackage ./aya-tool { };
       };
       packages =
-        nixpkgs.lib.genAttrs [ "aarch64-darwin" "aarch64-linux" "x86_64-darwin" "x86_64-linux" ]
+        nixpkgs.lib.genAttrs
+          [
+            "aarch64-darwin"
+            "aarch64-linux"
+            "x86_64-darwin"
+            "x86_64-linux"
+          ]
           (
             system:
             let
